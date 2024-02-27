@@ -5,16 +5,16 @@
   gather_facts: no
 
   tasks:
-  - name: Create a VM
-    vmware_guest:
-    hostname: 192.168.30.62
-    username: ntlam@vsphere.local
-    password: Thanhlam1234!@#$
-    validate_certs: False
-    name: test_ansible
-    template: Win10_Template
-    datacenter: Datacenter
-    datastore: datastore2
-    folder: Ansible
-    state: poweredon
-    wait_for_ip_address: no
+    - name: Create a VM
+      vmware_guest:
+        hostname: 192.168.30.62
+        username: ntlam@vsphere.local
+        password: Thanhlam1234!@#$
+        validate_certs: False
+        name: test_ansible
+        template: Win10_Template
+        datacenter: Datacenter
+        datastore: datastore2
+        folder: Ansible
+        state: poweredon
+        wait_for_ip_address: no
