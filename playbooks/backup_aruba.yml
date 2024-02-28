@@ -7,9 +7,13 @@
       aruba_command:
         commands:
           - show running-config
+        provider:
+          host: 192.168.32.1
+          username: admin
+          password: it@NTTU@2023
       register: config_output
 
     - name: Save running configuration to file
       copy:
-        content: "{{ config_output.stdout_lines | join('\n') }}"
+        content: "{{ config_output.stdout[0] }}"
         dest: "/path/to/backup/folder/aruba_config_{{ ansible_date_time.date }}.txt"
