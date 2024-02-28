@@ -1,8 +1,27 @@
 ---
-- name: Configurable backup path
-  community.network.aruba_config:
-    backup: true
-    lines: hostname {{ inventory_hostname }}
-    backup_options:
-      filename: backup.cfg
-      dir_path: /home/user
+- name: Backup Aruba Switch Configuration
+  hosts: aruba_switch
+  gather_facts: no
+
+  tasks:
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: "/path/to/backup/directory"
+        state: directory
+
+    - name: Backup Aruba Switch Configuration
+      arubaoss.arubaoss_command:
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "your_username"
+          password: "your_password"
+          transport: cli
+          authorize: yes
+        commands:
+          - show running-config
+      register: switch_config
+
+    - name: Save switch configuration to file
+      ansible.builtin.copy:
+        content: "{{ switch_config.stdout[0] }}"
+        dest: "/path/to/backup/directory/aruba_switch_{{ ansible_date_time.date }}.txt"
