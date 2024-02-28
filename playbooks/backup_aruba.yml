@@ -1,41 +1,7 @@
 ---
-- name: backup configuration
+- name: Save running-config
   hosts: aruba_switch
-  gather_facts: false
-  connection: network_cli
-
-  vars:
-    backup_root: ./backups
-
-    cli:
-      host: "{{ inventory_hostname }}"
-      username: admin
-      password: it@NTTU@2023
-      authorize: true
-
   tasks:
-    - name: run show running-config on remote devices
-      community.network.aruba_command:
-        commands: show running-config
-        provider: "{{ cli }}"
-      register: config
-
-    - name: ensure backup folder is created
-      file:
-        path: "{{ backup_root }}"
-        state: directory
-      run_once: yes
-
-    - name: ensure device folder is created
-      file:
-        path: "{{ backup_root }}/{{ inventory_hostname }}"
-        state: directory
-
-    - name: get timestamp
-      command: date +%Y%m%d
-      register: timestamp
-
-    - name: get/copy backup
-      copy:
-        content: "{{ config.stdout }}"
-        dest: "{{ backup_root }}/{{ inventory_hostname }}/running-config_{{ timestamp.stdout }}"
+    - name: Save running-config
+      aruba_config: # hoặc nxos_config nếu sử dụng Nexus
+        save: yes
