@@ -1,0 +1,7 @@
+- name: Configurable backup path
+  community.network.aruba_config:
+    backup: true
+    lines: hostname {{ inventory_hostname }}
+    backup_options:
+      filename: backup.cfg
+      dir_path: /home/user
