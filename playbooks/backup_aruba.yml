@@ -13,8 +13,8 @@
       arubaoss.arubaoss_command:
         provider:
           host: "{{ inventory_hostname }}"
-          username: "your_username"
-          password: "your_password"
+          username: "admin"
+          password: "it@NTTU@2023"
           transport: cli
           authorize: yes
         commands:
