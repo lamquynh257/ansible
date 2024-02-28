@@ -3,17 +3,14 @@
   hosts: aruba_switch
   gather_facts: no
   tasks:
-    - name: get running config
-      aruba_command:
+    - name: Fetch running configuration
+      community.network.aruba_command:
         commands:
           - show running-config
-        provider:
-          host: 192.168.32.1
-          username: admin
-          password: it@NTTU@2023
+        wait_for: result[0] contains "hostname"
       register: config_output
 
     - name: Save running configuration to file
       copy:
-        content: "{{ config_output.stdout[0] }}"
+        content: "{{ config_output.stdout | join('\n') }}"
         dest: "/path/to/backup/folder/aruba_config_{{ ansible_date_time.date }}.txt"
