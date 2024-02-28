@@ -1,0 +1,7 @@
+- name: backup arista configuration
+  community.network.aruba_config:
+    backup: true
+    lines: hostname {{ inventory_hostname }}
+    backup_options:
+      dir_path: /tmp/
+      filename: "{{ inventory_hostname }}.txt"
