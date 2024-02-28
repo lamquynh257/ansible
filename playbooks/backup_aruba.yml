@@ -2,26 +2,14 @@
 - name: Backup Aruba Switch Configuration
   hosts: aruba_switch
   gather_facts: no
-
   tasks:
-    - name: Ensure backup directory exists
-      ansible.builtin.file:
-        path: "/path/to/backup/directory"
-        state: directory
-
-    - name: Backup Aruba Switch Configuration
-      community.network.aruba_command:
-        provider:
-          host: "{{ inventory_hostname }}"
-          username: "admin"
-          password: "it@NTTU@2023"
-          transport: cli
-          authorize: yes
+    - name: Fetch running configuration
+      aruba_command:
         commands:
           - show running-config
-      register: switch_config
+      register: config_output
 
-    - name: Save switch configuration to file
-      ansible.builtin.copy:
-        content: "{{ switch_config.stdout[0] }}"
-        dest: "/path/to/backup/directory/aruba_switch_{{ ansible_date_time.date }}.txt"
+    - name: Save running configuration to file
+      copy:
+        content: "{{ config_output.stdout_lines | join('\n') }}"
+        dest: "/path/to/backup/folder/aruba_config_{{ ansible_date_time.date }}.txt"
