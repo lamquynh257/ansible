@@ -1,16 +1,41 @@
 ---
-- name: Backup Aruba Switch Configuration
+- name: backup configuration
   hosts: aruba_switch
-  gather_facts: no
-  tasks:
-    - name: Fetch running configuration
-      community.network.aruba_command:
-        commands:
-          - show running-config
-        wait_for: result[0] contains "hostname"
-      register: config_output
+  gather_facts: false
+  connection: network_cli
 
-    - name: Save running configuration to file
+  vars:
+    backup_root: ./backups
+
+    cli:
+      host: "{{ inventory_hostname }}"
+      username: admin
+      password: it@NTTU@2023
+      authorize: true
+
+  tasks:
+    - name: run show running-config on remote devices
+      ios_command:
+        commands: "show running-config"
+        provider: "{{ cli }}"
+      register: config
+
+    - name: ensure backup folder is created
+      file:
+        path: "{{ backup_root }}"
+        state: directory
+      run_once: yes
+
+    - name: ensure device rolder is created
+      file:
+        path: "{{ backup_root }}/{{ inventory_hostname }}"
+        state: directory
+
+    - name: get timestamp
+      command: date +%Y%m%d
+      register: timestamp
+
+    - name: get/copy backup
       copy:
-        content: "{{ config_output.stdout | join('\n') }}"
-        dest: "/path/to/backup/folder/aruba_config_{{ ansible_date_time.date }}.txt"
+        content: "{{ config.stdout[0] }}"
+        dest: "{{ backup_root }}/{{ inventory_hostname }}/running-config_{{ timestamp.stdout }}"
