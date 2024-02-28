@@ -10,7 +10,7 @@
         state: directory
 
     - name: Backup Aruba Switch Configuration
-      arubaoss.arubaoss_command:
+      community.network.aruba_command:
         provider:
           host: "{{ inventory_hostname }}"
           username: "admin"
