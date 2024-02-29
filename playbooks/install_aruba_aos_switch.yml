@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+    - name: Install aruba.aos_switch collection
+      ansible.builtin.shell:
+        command: ansible-galaxy collection install aruba.aos_switch
+    - name: Verify installation
+      ansible.builtin.assert:
+        that:
+          - "aruba.aos_switch in ansible-galaxy collection list"
