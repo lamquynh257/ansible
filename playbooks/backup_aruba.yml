@@ -1,11 +1,34 @@
 ---
-- name: Configure Aruba Switch
-  hosts: aruba_switch
-  gather_facts: no
+- name: Backup Aruba switch configuration with customizable options
+  hosts: all # Adapt this to your specific switch inventory group
+  become: true # Ensure adequate privileges for configuration changes
+  gather_facts: yes # Collect necessary facts for dynamic configuration
+
   tasks:
-    - name: Configurable backup path
+    - name: Get inventory hostname dynamically (recommended)
+      set_fact:
+        inventory_hostname: "{{ inventory_hostname }}"
+
+    - name: Backup switch configuration
       community.network.aruba_config:
         backup: true
+        # Customizable backup options (adapt these to your needs)
         backup_options:
-          filename: backup.cfg
-          dir_path: /home/user
+          filename: "{{ switch_backup_filename }}" # Use a variable for flexibility
+          dir_path: "{{ switch_backup_dir }}" # Use a variable for flexibility
+          description: "Backup from {{ inventory_hostname }} on {{ ansible_date_time.iso8601 }}" # Include timestamp for easy identification
+          # Customize other backup_options as needed (e.g., compress, include_unchanged)
+
+    - name: Debug or print the backup path (optional)
+      debug:
+        msg: "Backup saved to: {{ switch_backup_dir }}/{{ switch_backup_filename }}"
+
+  vars:
+    # Set default or template paths for backup filename and directory
+    switch_backup_filename: "aruba_switch_backup_{{ inventory_hostname }}_{{ ansible_date_time.iso8601 }}.cfg"
+    switch_backup_dir: "/opt/awx/backups/aruba_switch_configs" # Modify as needed
+
+
+    # Additional variables for customization (optional)
+    # include_unchanged: true  # Uncomment to back up even if configuration hasn't changed (can be resource-intensive)
+    # compress: true  # Uncomment to compress the backup file
