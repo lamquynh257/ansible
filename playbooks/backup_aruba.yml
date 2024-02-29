@@ -1,7 +1,12 @@
 ---
-- name: Save running-config
-  hosts: aruba_switch
+- hosts: all
+  connection: network_cli
+  gather_facts: no
+
   tasks:
-    - name: Save running-config
-      aruba_config: # hoặc nxos_config nếu sử dụng Nexus
-        save: yes
+    - name: Backup running configuration
+      community.network.aruba_config:
+        backup: true
+        backup_options:
+          filename: backup.cfg
+          dir_path: /home/user
