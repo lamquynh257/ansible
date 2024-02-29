@@ -1,10 +1,9 @@
 ---
-- hosts: Backup aruba
-  connection: network_cli
+- name: Configure Aruba Switch
+  hosts: aruba_switch
   gather_facts: no
-
   tasks:
-    - name: Backup running configuration
+    - name: Configurable backup path
       community.network.aruba_config:
         backup: true
         backup_options:
