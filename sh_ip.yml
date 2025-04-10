@@ -4,7 +4,7 @@
   tasks:
     - name: Lấy thông tin hệ thống
       arubaoss_command:
-        commands: show system
+        commands: show ip interface brief
       register: output
 
     - name: In kết quả
