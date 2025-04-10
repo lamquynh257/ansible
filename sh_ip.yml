@@ -1,13 +1,12 @@
----
-- name: Cau hinh tren router
+- name: Kiểm tra thông tin switch Aruba 6300
   hosts: all
   gather_facts: no
-
   tasks:
-    - name: Show ip
-      ios_command:
-        commands:
-          - show ip int brief
+    - name: Lấy thông tin hệ thống
+      arubaoss_command:
+        commands: show system
       register: output
 
-    - debug: var=output.stdout_lines
+    - name: In kết quả
+      debug:
+        var: output.stdout_lines
